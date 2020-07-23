@@ -1,8 +1,8 @@
-package com.obiangetfils.meetus;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.obiangetfils.meetus.activities;
 
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import com.obiangetfils.meetus.R;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -16,7 +16,7 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sign_up_main);
+        setContentView(R.layout.sign_up);
 
 
         imageBack = (ImageView) findViewById(R.id.imageBack);

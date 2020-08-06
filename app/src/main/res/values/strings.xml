@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MeetUs</string>
     <string name="welcome_to">Welcome to</string>
-    <string name="video_meeting_conference_app">Video Meeting|Conference App</string>
+    <string name="video_meeting_conference_app">Video Meeting | Conference App</string>
     <string name="sign_in_to_your_account">Sign In to your Account</string>
     <string name="your_email">Your Email</string>
     <string name="you_example_com">you@example.com</string>

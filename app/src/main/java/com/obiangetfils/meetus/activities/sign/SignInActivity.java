@@ -1,4 +1,4 @@
-package com.obiangetfils.meetus.sign;
+package com.obiangetfils.meetus.activities.sign;
 
 import android.content.Intent;
 import android.os.Bundle;

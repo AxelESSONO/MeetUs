@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name="com.obiangetfils.meetus.sign.SignInActivity"
+            android:name=".activities.sign.SignInActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -33,7 +33,7 @@
         </activity>
 
         <activity
-            android:name="com.obiangetfils.meetus.sign.SignUpActivity"
+            android:name=".activities.sign.SignUpActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
 

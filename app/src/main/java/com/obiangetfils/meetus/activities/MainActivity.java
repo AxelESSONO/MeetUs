@@ -3,11 +3,13 @@ package com.obiangetfils.meetus.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -16,19 +18,31 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.obiangetfils.meetus.R;
-import com.obiangetfils.meetus.sign.SignInActivity;
+import com.obiangetfils.meetus.activities.sign.SignInActivity;
+import com.obiangetfils.meetus.adapters.UserAdapter;
+import com.obiangetfils.meetus.models.User;
 import com.obiangetfils.meetus.utilities.Constants;
 import com.obiangetfils.meetus.utilities.PreferenceManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private PreferenceManager preferenceManager;
     private TextView textTitle, textSignOut;
+    private RecyclerView usersRecyclerView;
+    private List<User> users;
+    private UserAdapter userAdapter;
+
+    private TextView textErrorMessage;
+    private ProgressBar usersProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
         textTitle = (TextView) findViewById(R.id.textTitle);
         textSignOut = (TextView) findViewById(R.id.textSignOut);
+        usersRecyclerView = (RecyclerView) findViewById(R.id.usersRecyclerView);
+        textErrorMessage = (TextView) findViewById(R.id.textErrorMessage);
+        usersProgressBar = (ProgressBar) findViewById(R.id.usersProgressBar);
 
         textTitle.setText(String.format(
                 "%s %s",
@@ -60,6 +77,50 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        users = new ArrayList<>();
+        userAdapter = new UserAdapter(users);
+        usersRecyclerView.setAdapter(userAdapter);
+        getUsers();
+    }
+
+    private void getUsers() {
+
+        usersProgressBar.setVisibility(View.VISIBLE);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.KEY_COLLECTIONS_USERS)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        usersProgressBar.setVisibility(View.GONE);
+                        String myUsersId = preferenceManager.getString(Constants.KEY_USER_ID);
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                if (myUsersId.equals(documentSnapshot.getId())) {
+                                    continue;
+                                }
+                                User user = new User();
+                                user.firstName = documentSnapshot.getString(Constants.KEY_FIRST_NAME);
+                                user.lastName = documentSnapshot.getString(Constants.KEY_LAST_NAME);
+                                user.email = documentSnapshot.getString(Constants.KEY_EMAIL);
+                                user.token = documentSnapshot.getString(Constants.KEY_FCM_TOKEN);
+                                users.add(user);
+                            }
+
+                            if (users.size() > 0) {
+                                userAdapter.notifyDataSetChanged();
+                            } else {
+                                textErrorMessage.setText(String.format("%s", "No Users Available"));
+                                textErrorMessage.setVisibility(View.VISIBLE);
+                            }
+
+                        } else {
+                            textErrorMessage.setText(String.format("%s", "No Users Available"));
+                            textErrorMessage.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
 
     }
 

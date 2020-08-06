@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,6 +26,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.obiangetfils.meetus.R;
 import com.obiangetfils.meetus.activities.sign.SignInActivity;
 import com.obiangetfils.meetus.adapters.UserAdapter;
+import com.obiangetfils.meetus.listeners.UsersListener;
 import com.obiangetfils.meetus.models.User;
 import com.obiangetfils.meetus.utilities.Constants;
 import com.obiangetfils.meetus.utilities.PreferenceManager;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements UsersListener {
 
     private PreferenceManager preferenceManager;
     private TextView textTitle, textSignOut;
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private UserAdapter userAdapter;
 
     private TextView textErrorMessage;
-    private ProgressBar usersProgressBar;
+    private SwipeRefreshLayout swiperefreshlayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
         textSignOut = (TextView) findViewById(R.id.textSignOut);
         usersRecyclerView = (RecyclerView) findViewById(R.id.usersRecyclerView);
         textErrorMessage = (TextView) findViewById(R.id.textErrorMessage);
-        usersProgressBar = (ProgressBar) findViewById(R.id.usersProgressBar);
+        swiperefreshlayout = (SwipeRefreshLayout) findViewById(R.id.swiperefreshlayout);
+
 
         textTitle.setText(String.format(
                 "%s %s",
@@ -79,23 +82,26 @@ public class MainActivity extends AppCompatActivity {
         });
 
         users = new ArrayList<>();
-        userAdapter = new UserAdapter(users);
+        userAdapter = new UserAdapter(users, this);
         usersRecyclerView.setAdapter(userAdapter);
+
+        swiperefreshlayout.setOnRefreshListener(this::getUsers);
         getUsers();
     }
 
     private void getUsers() {
 
-        usersProgressBar.setVisibility(View.VISIBLE);
+        swiperefreshlayout.setRefreshing(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTIONS_USERS)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        usersProgressBar.setVisibility(View.GONE);
+                        swiperefreshlayout.setRefreshing(false);
                         String myUsersId = preferenceManager.getString(Constants.KEY_USER_ID);
                         if (task.isSuccessful() && task.getResult() != null) {
+                            users.clear();
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 if (myUsersId.equals(documentSnapshot.getId())) {
                                     continue;
@@ -172,4 +178,35 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void initiateVideoMeeting(User user) {
+        if (user.token == null || user.token.trim().isEmpty()) {
+            Toast.makeText(
+                    this,
+                    user.firstName + " " + user.lastName + " is not available for meeting",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(
+                    this,
+                    "Video Meeting with " + user.firstName + " " + user.lastName,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void initiateAudioMeeting(User user) {
+
+        if (user.token == null || user.token.trim().isEmpty()) {
+            Toast.makeText(
+                    this,
+                    user.firstName + " " + user.lastName + " is not available for meeting",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(
+                    this,
+                    "Audio Meeting with " + user.firstName + " " + user.lastName,
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
 }

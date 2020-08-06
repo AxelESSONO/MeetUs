@@ -5,9 +5,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.obiangetfils.meetus.R;
+import com.obiangetfils.meetus.listeners.UsersListener;
 import com.obiangetfils.meetus.models.User;
 
 import java.util.List;
@@ -16,10 +19,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
 
     private List<User> users;
+    private UsersListener usersListener;
 
 
-    public UserAdapter(List<User> users) {
+    public UserAdapter(List<User> users, UsersListener usersListener) {
         this.users = users;
+        this.usersListener = usersListener;
     }
 
     @NonNull
@@ -40,7 +45,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return users.size();
     }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder {
+    class UserViewHolder extends RecyclerView.ViewHolder {
 
         TextView textFirstChar, textUserName, textEmail;
         ImageView imageAudioMeeting, imageVideoMeeting;
@@ -59,6 +64,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             textFirstChar.setText(user.firstName.substring(0, 1));
             textUserName.setText(String.format("%s %s", user.firstName, user.lastName));
             textEmail.setText(user.email);
+
+            imageAudioMeeting.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    usersListener.initiateAudioMeeting(user);
+                }
+            });
+
+            imageVideoMeeting.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    usersListener.initiateVideoMeeting(user);
+                }
+            });
         }
     }
 }

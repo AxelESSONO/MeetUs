@@ -31,6 +31,7 @@ import com.obiangetfils.meetus.models.User;
 import com.obiangetfils.meetus.utilities.Constants;
 import com.obiangetfils.meetus.utilities.PreferenceManager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
 
     private TextView textErrorMessage;
     private SwipeRefreshLayout swiperefreshlayout;
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,33 +182,37 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
 
     @Override
     public void initiateVideoMeeting(User user) {
+
+        type = "video";
         if (user.token == null || user.token.trim().isEmpty()) {
             Toast.makeText(
                     this,
                     user.firstName + " " + user.lastName + " is not available for meeting",
                     Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(
-                    this,
-                    "Video Meeting with " + user.firstName + " " + user.lastName,
-                    Toast.LENGTH_SHORT).show();
+            launchCall(user, type);
         }
     }
 
     @Override
     public void initiateAudioMeeting(User user) {
-
+        type = "audio";
         if (user.token == null || user.token.trim().isEmpty()) {
             Toast.makeText(
                     this,
                     user.firstName + " " + user.lastName + " is not available for meeting",
                     Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(
-                    this,
-                    "Audio Meeting with " + user.firstName + " " + user.lastName,
-                    Toast.LENGTH_SHORT).show();
+            launchCall(user, type);
         }
 
     }
+
+    private void launchCall(User user, String type) {
+        Intent intent = new Intent(getApplicationContext(), OutcomingInvitationActivity.class);
+        intent.putExtra("user", user);
+        intent.putExtra("type", type);
+        startActivity(intent);
+    }
+
 }

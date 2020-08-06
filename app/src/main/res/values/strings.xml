@@ -18,4 +18,5 @@
     <string name="lastName">Last Name</string>
     <string name="confirm_your_password">Confirm Password</string>
     <string name="aldready_have_account">Already Have Account?</string>
+    <string name="sign_out">Sign Out</string>
 </resources>

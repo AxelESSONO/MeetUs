@@ -154,6 +154,16 @@
             android:textColor="@color/colorTextIcons"
             app:layout_constraintTop_toBottomOf="@id/cardSignIn" />
 
+        <ProgressBar
+            android:id="@+id/signInProgressBar"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/buttonSignIn"
+            app:layout_constraintEnd_toEndOf="@id/buttonSignIn"
+            app:layout_constraintStart_toStartOf="@id/buttonSignIn"
+            app:layout_constraintTop_toTopOf="@id/buttonSignIn" />
+
         <TextView
             android:id="@+id/textNoAccount"
             android:layout_width="match_parent"
@@ -183,7 +193,7 @@
             android:textAllCaps="true"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/_13ssp"
-            app:layout_constraintTop_toBottomOf="@id/textNoAccount"/>
+            app:layout_constraintTop_toBottomOf="@id/textNoAccount" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

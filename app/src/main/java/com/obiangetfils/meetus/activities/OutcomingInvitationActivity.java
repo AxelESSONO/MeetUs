@@ -40,12 +40,12 @@ import retrofit2.Response;
 public class OutcomingInvitationActivity extends AppCompatActivity {
 
     private ImageView imageMeetingType, imageStopInvitation;
-    private String meetingType;
     private TextView textFirstChar, textUserName, textEmail;
     private User user;
     private PreferenceManager preferenceManager;
     private String inviterToken = null;
     private String meetingRoom = null;
+    private String meetingType = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,21 +193,18 @@ public class OutcomingInvitationActivity extends AppCompatActivity {
 
                 if (type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
 
-
-
                     try {
 
                         URL serverURL = new URL("https://meet.jit.si");
-                        JitsiMeetConferenceOptions conferenceOptions =
-                                new JitsiMeetConferenceOptions.Builder()
-                                        .setServerURL(serverURL)
-                                        .setWelcomePageEnabled(false)
-                                        .setRoom(meetingRoom)
-                                        .build();
-
-                        JitsiMeetActivity.launch(OutcomingInvitationActivity.this, conferenceOptions);
+                        JitsiMeetConferenceOptions.Builder builder = new JitsiMeetConferenceOptions.Builder();
+                        builder.setServerURL(serverURL);
+                        builder.setWelcomePageEnabled(false);
+                        builder.setRoom(meetingRoom);
+                        if (meetingType.equals("audio")) {
+                            builder.setVideoMuted(true);
+                        }
+                        JitsiMeetActivity.launch(OutcomingInvitationActivity.this, builder.build());
                         finish();
-
 
                     } catch (Exception exception) {
                         Toast.makeText(OutcomingInvitationActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();

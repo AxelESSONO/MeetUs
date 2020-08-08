@@ -57,9 +57,7 @@ public class IncomingInvitationActivity extends AppCompatActivity {
         if (meetingType != null) {
             if (meetingType.equals("video")) {
                 imageMeetingType.setImageResource(R.drawable.ic_video);
-            }
-
-            if (meetingType.equals("audio")) {
+            }else {
                 imageMeetingType.setImageResource(R.drawable.ic_audio);
             }
         }
@@ -128,14 +126,18 @@ public class IncomingInvitationActivity extends AppCompatActivity {
                         try {
 
                             URL serverURL = new URL("https://meet.jit.si");
-                            JitsiMeetConferenceOptions conferenceOptions =
-                                    new JitsiMeetConferenceOptions.Builder()
-                                    .setServerURL(serverURL)
-                                    .setWelcomePageEnabled(false)
-                                    .setRoom(getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM))
-                                    .build();
 
-                            JitsiMeetActivity.launch(IncomingInvitationActivity.this, conferenceOptions);
+
+                            JitsiMeetConferenceOptions.Builder builder = new JitsiMeetConferenceOptions.Builder();
+                            builder.setServerURL(serverURL);
+                            builder.setWelcomePageEnabled(false);
+                            builder.setRoom(getIntent().getStringExtra(Constants.REMOTE_MSG_MEETING_ROOM));
+
+                            if (meetingType.equals("audio")){
+                                builder.setVideoMuted(true);
+                            }
+
+                            JitsiMeetActivity.launch(IncomingInvitationActivity.this, builder.build());
                             finish();
 
 

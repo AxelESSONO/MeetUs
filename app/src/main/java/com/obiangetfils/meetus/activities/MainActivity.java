@@ -3,15 +3,12 @@ package com.obiangetfils.meetus.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,8 +27,6 @@ import com.obiangetfils.meetus.listeners.UsersListener;
 import com.obiangetfils.meetus.models.User;
 import com.obiangetfils.meetus.utilities.Constants;
 import com.obiangetfils.meetus.utilities.PreferenceManager;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -190,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                     user.firstName + " " + user.lastName + " is not available for meeting",
                     Toast.LENGTH_SHORT).show();
         } else {
-            launchCall(user, type);
+            startCall(user, type);
         }
     }
 
@@ -203,12 +198,12 @@ public class MainActivity extends AppCompatActivity implements UsersListener {
                     user.firstName + " " + user.lastName + " is not available for meeting",
                     Toast.LENGTH_SHORT).show();
         } else {
-            launchCall(user, type);
+            startCall(user, type);
         }
 
     }
 
-    private void launchCall(User user, String type) {
+    private void startCall(User user, String type) {
         Intent intent = new Intent(getApplicationContext(), OutcomingInvitationActivity.class);
         intent.putExtra("user", user);
         intent.putExtra("type", type);

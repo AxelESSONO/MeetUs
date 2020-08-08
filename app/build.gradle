@@ -64,6 +64,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.3.2'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
     implementation 'com.google.firebase:firebase-firestore:21.5.0'
+    implementation 'com.google.firebase:firebase-messaging-directboot:20.2.4'
+
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     testImplementation 'junit:junit:4.13'

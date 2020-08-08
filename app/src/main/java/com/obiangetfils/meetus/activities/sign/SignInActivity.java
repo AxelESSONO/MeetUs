@@ -31,8 +31,6 @@ public class SignInActivity extends AppCompatActivity {
     private ProgressBar signInProgressBar;
     private PreferenceManager preferenceManager;
 
-    String myToken = "eq9cVNQsQTyvipZ2Uu6dRr:APA91bGyWG3NCVrEXbpFWmgqlrjknhWhn2xvUMYvfEu-K9vSz9uRL9RIGxdTBW4dWBjLjMxrhVX2gHe3BeDVoBBzaQVGAlJ1dt2L22bj9R0-CBFoYGca4Lvcn_fJxh8XI0oS1n-OacAe";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

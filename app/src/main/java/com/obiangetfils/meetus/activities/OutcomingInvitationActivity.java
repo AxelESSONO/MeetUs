@@ -25,8 +25,13 @@ import com.obiangetfils.meetus.network.ApiService;
 import com.obiangetfils.meetus.utilities.Constants;
 import com.obiangetfils.meetus.utilities.PreferenceManager;
 
+import org.jitsi.meet.sdk.JitsiMeetActivity;
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.net.URL;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,6 +45,7 @@ public class OutcomingInvitationActivity extends AppCompatActivity {
     private User user;
     private PreferenceManager preferenceManager;
     private String inviterToken = null;
+    private String meetingRoom = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +82,7 @@ public class OutcomingInvitationActivity extends AppCompatActivity {
         imageStopInvitation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (user != null){
+                if (user != null) {
                     cancelInvitation(user.token);
                 }
             }
@@ -100,7 +106,7 @@ public class OutcomingInvitationActivity extends AppCompatActivity {
 
     }
 
-    private void initiateMeeting(String meetingType, String receiverToken){
+    private void initiateMeeting(String meetingType, String receiverToken) {
         try {
             JSONArray tokens = new JSONArray();
             tokens.put(receiverToken);
@@ -114,6 +120,9 @@ public class OutcomingInvitationActivity extends AppCompatActivity {
             data.put(Constants.KEY_LAST_NAME, preferenceManager.getString(Constants.KEY_LAST_NAME));
             data.put(Constants.KEY_EMAIL, preferenceManager.getString(Constants.KEY_EMAIL));
             data.put(Constants.REMOTE_MSG_INVITER_TOKEN, inviterToken);
+
+            meetingRoom = preferenceManager.getString(Constants.KEY_USER_ID) + "_" +
+                          UUID.randomUUID().toString().substring(0, 5);
 
             body.put(Constants.REMOTE_MSG_DATA, data);
             body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens);
@@ -135,7 +144,7 @@ public class OutcomingInvitationActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (type.equals(Constants.REMOTE_MSG_INVITATION)) {
                         Toast.makeText(OutcomingInvitationActivity.this, "Invitation sent successfully", Toast.LENGTH_SHORT).show();
-                    } else if (type.equals(Constants.REMOTE_MSG_INVITATION_RESPONSE)){
+                    } else if (type.equals(Constants.REMOTE_MSG_INVITATION_RESPONSE)) {
                         Toast.makeText(OutcomingInvitationActivity.this, "Invitation Cancelled", Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -183,12 +192,32 @@ public class OutcomingInvitationActivity extends AppCompatActivity {
             if (type != null) {
 
                 if (type.equals(Constants.REMOTE_MSG_INVITATION_ACCEPTED)) {
-                    Toast.makeText(OutcomingInvitationActivity.this, "Invitation Accepted", Toast.LENGTH_SHORT).show();
-                } else if (type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED)){
+
+
+
+                    try {
+
+                        URL serverURL = new URL("https://meet.jit.si");
+                        JitsiMeetConferenceOptions conferenceOptions =
+                                new JitsiMeetConferenceOptions.Builder()
+                                        .setServerURL(serverURL)
+                                        .setWelcomePageEnabled(false)
+                                        .setRoom(meetingRoom)
+                                        .build();
+
+                        JitsiMeetActivity.launch(OutcomingInvitationActivity.this, conferenceOptions);
+                        finish();
+
+
+                    } catch (Exception exception) {
+                        Toast.makeText(OutcomingInvitationActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+
+                } else if (type.equals(Constants.REMOTE_MSG_INVITATION_REJECTED)) {
                     Toast.makeText(OutcomingInvitationActivity.this, "Invitation Rejected", Toast.LENGTH_SHORT).show();
                     finish();
                 }
-
             }
         }
     };

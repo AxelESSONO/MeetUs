@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.obiangetfils.meetus"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -61,10 +61,15 @@ dependencies {
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+
+    //Firebase dependencies
     implementation 'com.google.firebase:firebase-auth:19.3.2'
     implementation 'com.google.firebase:firebase-messaging:20.2.4'
     implementation 'com.google.firebase:firebase-firestore:21.5.0'
     implementation 'com.google.firebase:firebase-messaging-directboot:20.2.4'
+
+    // (other dependencies)
+    implementation ('org.jitsi.react:jitsi-meet-sdk:2.8.2') { transitive = true }
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
